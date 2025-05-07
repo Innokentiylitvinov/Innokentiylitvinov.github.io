@@ -47,7 +47,7 @@ spotLight.castShadow = true;
 spotLight.shadow.bias = -0.0001;
 scene.add(spotLight);
 
-const loader = new GLTFLoader().setPath('models/pushkin');
+const loader = new GLTFLoader().setPath('models/pushkin/');
 loader.load('pushkin.gltf', (gltf) => {
   console.log('loading model');
   const mesh = gltf.scene;
