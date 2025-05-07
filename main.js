@@ -17,17 +17,17 @@ document.body.appendChild(renderer.domElement);
 const scene = new THREE.Scene();
 
 const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
-camera.position.set(4, 5, 11);
+camera.position.set(-2.5, 5, 10);
 
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.enablePan = false;
 controls.minDistance = 7;
 controls.maxDistance = 14;
-controls.minPolarAngle = 0.5;
+controls.minPolarAngle = 0.15;
 controls.maxPolarAngle = 1.5;
 controls.autoRotate = false;
-controls.target = new THREE.Vector3(0, 1, 0);
+controls.target = new THREE.Vector3(0, 0, 0);
 controls.update();
 
 // const m1 = new THREE.MeshBasicMaterial({color: 0xFF0000});  
