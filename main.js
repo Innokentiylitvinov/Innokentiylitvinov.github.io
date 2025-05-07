@@ -42,7 +42,7 @@ groundMesh.receiveShadow = true;
 scene.add(groundMesh);
 
 const spotLight = new THREE.SpotLight(0xffffff, 3000, 100, 0.22, 1);
-spotLight.position.set(0, 25, 0);
+spotLight.position.set(0, 50, 0);
 spotLight.castShadow = true;
 spotLight.shadow.bias = -0.0001;
 scene.add(spotLight);
@@ -59,7 +59,8 @@ loader.load('pushkin.gltf', (gltf) => {
     }
   });
 
-  mesh.position.set(0, 1.05, -1);
+  mesh.position.set(0, 0.1, 0);
+  mesh.scale.set(0.1,0.1,0.1);
   scene.add(mesh);
 
   document.getElementById('progress-container').style.display = 'none';
