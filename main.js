@@ -22,8 +22,8 @@ camera.position.set(4, 5, 11);
 const controls = new OrbitControls(camera, renderer.domElement);
 controls.enableDamping = true;
 controls.enablePan = false;
-controls.minDistance = 5;
-controls.maxDistance = 20;
+controls.minDistance = 7;
+controls.maxDistance = 14;
 controls.minPolarAngle = 0.5;
 controls.maxPolarAngle = 1.5;
 controls.autoRotate = false;
@@ -42,7 +42,7 @@ controls.update();
 // groundMesh.receiveShadow = true;
 // scene.add(groundMesh);
 
-const light = new THREE.AmbientLight(0xffffff, 10);
+const light = new THREE.AmbientLight(0xffffff, 3);
 light.castShadow = false;
 scene.add(light);
 
@@ -73,7 +73,8 @@ loader.load('pushkin.gltf', (gltf) => {
 
   mesh.traverse((child) => {
     if (child.isMesh) {
-
+      child.castShadow = false;
+      child.reseveShadow = false;
       if (child.name.includes('glass')) {
         child.material = glassMaterial;
       } else {
@@ -82,18 +83,18 @@ loader.load('pushkin.gltf', (gltf) => {
           materialParams.map = child.material.map;
           // materialParams.transparent = true;
           // materialParams.alphaHash  = true;
-          
+
         }
         materialParams.side = THREE.DoubleSide;
         materialParams.color = 0xffffff;
-        
+
         const newMaterial = new THREE.MeshBasicMaterial(materialParams);
         child.material = newMaterial;
       }
     }
   });
 
-  mesh.position.set(0, 0.1, 0);
+  mesh.position.set(-1, 0, 0);
   mesh.scale.set(0.1, 0.1, 0.1);
   scene.add(mesh);
 });
