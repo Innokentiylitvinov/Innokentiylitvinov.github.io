@@ -6,7 +6,7 @@ const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.outputColorSpace = THREE.SRGBColorSpace;
 
 renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setClearColor(0x000000);
+renderer.setClearColor(0xffffff);
 renderer.setPixelRatio(window.devicePixelRatio);
 
 renderer.shadowMap.enabled = true;
@@ -30,45 +30,74 @@ controls.autoRotate = false;
 controls.target = new THREE.Vector3(0, 1, 0);
 controls.update();
 
-const groundGeometry = new THREE.PlaneGeometry(20, 20, 32, 32);
-groundGeometry.rotateX(-Math.PI / 2);
-const groundMaterial = new THREE.MeshStandardMaterial({
-  color: 0x555555,
-  side: THREE.DoubleSide
-});
-const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
-groundMesh.castShadow = false;
-groundMesh.receiveShadow = true;
-scene.add(groundMesh);
+// const m1 = new THREE.MeshBasicMaterial({color: 0xFF0000});  
+// const groundGeometry = new THREE.PlaneGeometry(20, 20, 32, 32);
+// groundGeometry.rotateX(-Math.PI / 2);
+// const groundMaterial = new THREE.MeshStandardMaterial({
+//   color: 0x555555,
+//   side: THREE.DoubleSide
+// });
+// const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
+// groundMesh.castShadow = false;
+// groundMesh.receiveShadow = true;
+// scene.add(groundMesh);
 
-const spotLight = new THREE.SpotLight(0xffffff, 3000, 100, 0.22, 1);
-spotLight.position.set(0, 50, 0);
-spotLight.castShadow = true;
-spotLight.shadow.bias = -0.0001;
-scene.add(spotLight);
+const light = new THREE.AmbientLight(0xffffff, 10);
+light.castShadow = false;
+scene.add(light);
+
+// const spotLight = new THREE.SpotLight(0xffffff, 3000, 100, 0.22, 1);
+// spotLight.position.set(0, 50, 50);
+// spotLight.castShadow = false;
+// spotLight.shadow.bias = -0.0001;
+// scene.add(spotLight);
 
 const loader = new GLTFLoader().setPath('models/pushkin/');
 loader.load('pushkin.gltf', (gltf) => {
   console.log('loading model');
   const mesh = gltf.scene;
+  const glassMaterial = new THREE.MeshPhysicalMaterial({
+    color: 0x000000,
+    metalness: .9,
+    roughness: .05,
+    envMapIntensity: 0.9,
+    clearcoat: 1,
+    transparent: true,
+    opacity: .5,
+    reflectivity: 0.2,
+    refractionRatio: 0.985,
+    ior: 0.9,
+    side: THREE.DoubleSide,
+    // alphaHash: true    
+  });
 
   mesh.traverse((child) => {
     if (child.isMesh) {
-      child.castShadow = true;
-      child.receiveShadow = true;
+
+      if (child.name.includes('glass')) {
+        child.material = glassMaterial;
+      } else {
+        const materialParams = {};
+        if (child.material.map) {
+          materialParams.map = child.material.map;
+          // materialParams.transparent = true;
+          // materialParams.alphaHash  = true;
+          
+        }
+        materialParams.side = THREE.DoubleSide;
+        materialParams.color = 0xffffff;
+        
+        const newMaterial = new THREE.MeshBasicMaterial(materialParams);
+        child.material = newMaterial;
+      }
     }
   });
 
   mesh.position.set(0, 0.1, 0);
-  mesh.scale.set(0.1,0.1,0.1);
+  mesh.scale.set(0.1, 0.1, 0.1);
   scene.add(mesh);
-
-  document.getElementById('progress-container').style.display = 'none';
-}, (xhr) => {
-  console.log(`loading ${xhr.loaded / xhr.total * 100}%`);
-}, (error) => {
-  console.error(error);
 });
+
 
 window.addEventListener('resize', () => {
   camera.aspect = window.innerWidth / window.innerHeight;
